@@ -6,6 +6,8 @@ from typing import AsyncGenerator
 
 Base = declarative_base()
 
+#URL = 
+
 engine = create_async_engine(URL, echo=true)
 
 async_session = sessionmaker(
