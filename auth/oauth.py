@@ -46,4 +46,4 @@ def decode(request: Request): #receives query parameter [ex) ?code=0.AAAA1XyZ...
 #NEXT STEPS
 #receive response from token exchange
 #find and extract access token
-#use access token to call microsoft graph /me for user database
+#use access token to call microsoft graph /me for user databases
