@@ -1,13 +1,16 @@
 from main import oauth_router as router
 from fastapi import APIRouter, Depends, HTTPException, Request, requests
 from models.user import MicrosoftUser
-from sqlalchemy.ext.asyncio import AsyncSession
-from db.base import get_db
+# from sqlalchemy.ext.asyncio import AsyncSession
+# from db.base import get_db
 from dotenv import load_dotenv
 import os
 from urllib.parse import urlencode
 from fastapi.responses import RedirectResponse
 import json
+from motor.motor_asyncio import AsyncIOMotorClient
+from db.db import db
+from services.user_service import get_user_info
 
 router = APIRouter()
 
@@ -43,12 +46,14 @@ def decode(request: Request): #receives query parameter [ex) ?code=0.AAAA1XyZ...
     body = urlencode(params)
     
     data = requests.post(token_url, data=body, headers={"Content-Type": "application/x-www-form-urlencoded"}) #sends post request
-    response_data = data.json()
-    access_token = response_data["access_token"]
+    response_data = data.json() #translates request to python dictionary
+    access_token = response_data["access_token"] #extracts access token from response
+    get_user_info(access_token)
     
-
+    
+    
     
 #NEXT STEPS
-#receive response from token exchange
-#find and extract access token
-#use access token to call microsoft graph /me for user databases
+#learn mongodb and connections
+#create user table in mongo
+#update user table with /me payload
