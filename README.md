@@ -17,7 +17,7 @@ This project was designed to overcome limitations in my earlier local-only versi
 # Technologies
 
 - Python + FastAPI — Backend API
-- PostgreSQL (planned) — For structured event and policy storage
+- MongoDB (planned) — For structured event, policy, and AI output
 - Microsoft OAuth 2.0 — Secure user login and token management
 - Azure (in progress) — Hosting, Graph API integration, and app registration
 - AI/NLP Logic — Extracts keywords like "exam", "quiz", and their associated dates from PDFs
@@ -28,7 +28,7 @@ This project was designed to overcome limitations in my earlier local-only versi
 
 - Parses full syllabus PDFs using PyMuPDF
 - Uses regex + keyword logic to extract academic deadlines
-- Converts dates to ISO format and stores in PostgreSQL
+- Converts dates to ISO format and stores in MongoDB
 - Authentication flow built on Microsoft OAuth 2.0
 - (Planned) Calendar sync with Microsoft Graph API
 
