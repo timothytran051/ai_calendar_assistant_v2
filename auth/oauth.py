@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 import os
 from urllib.parse import urlencode
 from fastapi.responses import RedirectResponse
+import json
 
 router = APIRouter()
 
@@ -41,8 +42,8 @@ def decode(request: Request): #receives query parameter [ex) ?code=0.AAAA1XyZ...
     }
     body = urlencode(params)
     
-    response_data = requests.post(token_url, data=body, headers={"Content-Type": "application/x-www-form-urlencoded"}) #sends post request
-    
+    data = requests.post(token_url, data=body, headers={"Content-Type": "application/x-www-form-urlencoded"}) #sends post request
+    response_data = data.json()
     access_token = response_data["access_token"]
     
 
