@@ -41,7 +41,11 @@ def decode(request: Request): #receives query parameter [ex) ?code=0.AAAA1XyZ...
     }
     body = urlencode(params)
     
-    requests.post(token_url, data=body, headers={"Content-Type": "application/x-www-form-urlencoded"}) #sends post request
+    response_data = requests.post(token_url, data=body, headers={"Content-Type": "application/x-www-form-urlencoded"}) #sends post request
+    
+    access_token = response_data["access_token"]
+    
+
     
 #NEXT STEPS
 #receive response from token exchange
