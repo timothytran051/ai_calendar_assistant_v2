@@ -10,7 +10,7 @@ from fastapi.responses import RedirectResponse
 import json
 from motor.motor_asyncio import AsyncIOMotorClient
 from db.db import db
-from services.user_service import get_user_info
+from services.user_service import get_user_info, upsert_user
 import requests
 
 router = APIRouter()
@@ -34,7 +34,7 @@ def microsoft_login(): #login function
     return RedirectResponse(url) #fastapi redirects user to microsoft login screen
 
 @router.get("/microsoft/callback") #token exchange function, makes request/handles callback
-def decode(request: Request): #receives query parameter [ex) ?code=0.AAAA1XyZ...abc123]
+async def decode(request: Request): #receives query parameter [ex) ?code=0.AAAA1XyZ...abc123]
     token_url = "https://login.microsoftonline.com/common/oauth2/v2.0/token" #microsoft token endpoint, function will send POST request to this URL to exchange the code for an access token
     params = { 
         "client_id": client_id, #app identity
@@ -51,7 +51,8 @@ def decode(request: Request): #receives query parameter [ex) ?code=0.AAAA1XyZ...
     access_token = response_data["access_token"] #extracts access token from response
     print("Access Token:", access_token)
     print("data:", response_data)
-    get_user_info(access_token)
+    info = get_user_info(access_token)
+    await upsert_user(info)
     
     
     
