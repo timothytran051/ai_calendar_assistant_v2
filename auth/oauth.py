@@ -1,6 +1,6 @@
-from main import oauth_router as router
-from fastapi import APIRouter, Depends, HTTPException, Request, requests
-from models.user import MicrosoftUser
+# from main import oauth_router as router
+from fastapi import APIRouter, Depends, HTTPException, Request
+# from models.user import MicrosoftUser
 # from sqlalchemy.ext.asyncio import AsyncSession
 # from db.base import get_db
 from dotenv import load_dotenv
@@ -11,6 +11,7 @@ import json
 from motor.motor_asyncio import AsyncIOMotorClient
 from db.db import db
 from services.user_service import get_user_info
+import requests
 
 router = APIRouter()
 
@@ -25,7 +26,7 @@ def microsoft_login(): #login function
     params = { #parameters used in url
         "client_id": client_id, #app identity
         "response_type": "code", #requests authorization code, NOT token
-        "redirect_uri": redirect_uri, #redirects user to uri (currently http://localhost:8000/auth/microsoft/callback)
+        "redirect_uri": redirect_uri, #redirects user to uri (currently http://localhost:8000/oauth/microsoft/callback)
         "scope": "User.Read offline_access Calendars.ReadWrite", #user grants access for app
         "response_mode": "query" #microsoft returns code in URL query string
     }
@@ -48,6 +49,8 @@ def decode(request: Request): #receives query parameter [ex) ?code=0.AAAA1XyZ...
     data = requests.post(token_url, data=body, headers={"Content-Type": "application/x-www-form-urlencoded"}) #sends post request
     response_data = data.json() #translates request to python dictionary
     access_token = response_data["access_token"] #extracts access token from response
+    print("Access Token:", access_token)
+    print("data:", response_data)
     get_user_info(access_token)
     
     
