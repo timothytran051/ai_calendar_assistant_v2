@@ -11,7 +11,13 @@ def get_user_info(access_token):
         "email": response_data.get("mail"),
         "username": response_data.get("userPrincipalName")
     }
-    print(user_data)
+    return user_data
     
-# async def upsert_user(user_data): #upsert function (insert or update)
     
+async def upsert_user(user_data): #upsert function (insert or update)
+    users_collection = db["users"]
+    await users_collection.update_one(
+        {"_id": user_data["_id"]},
+        {"$set": user_data},
+        upsert=True
+    )
