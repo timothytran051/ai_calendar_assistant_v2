@@ -20,7 +20,7 @@ client_id = os.getenv("APP_ID")
 redirect_uri = os.getenv("REDIRECT_URI")
 secret = os.getenv("CLIENT_SECRET")
 
-@router.get("/login") #get request, /auth/login
+@router.get("/login") #get request, /oauth/login
 def microsoft_login(): #login function
     auth_url = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize" #starting point for microsoft oauth login
     params = { #parameters used in url
@@ -49,15 +49,9 @@ async def decode(request: Request): #receives query parameter [ex) ?code=0.AAAA1
     data = requests.post(token_url, data=body, headers={"Content-Type": "application/x-www-form-urlencoded"}) #sends post request
     response_data = data.json() #translates request to python dictionary
     access_token = response_data["access_token"] #extracts access token from response
-    print("Access Token:", access_token)
-    print("data:", response_data)
     info = get_user_info(access_token)
     await upsert_user(info)
     
     
     
     
-#NEXT STEPS
-#learn mongodb and connections
-#create user table in mongo
-#update user table with /me payload

@@ -15,9 +15,9 @@ def get_user_info(access_token):
     
     
 async def upsert_user(user_data): #upsert function (insert or update)
-    users_collection = db["users"]
-    await users_collection.update_one(
-        {"_id": user_data["_id"]},
-        {"$set": user_data},
-        upsert=True
+    users_collection = db["users"] #creates or "opens" users table in db
+    await users_collection.update_one( 
+        {"_id": user_data["_id"]}, #grabs user id from table, if found then mongo will go to next step, if not then it will create an _id
+        {"$set": user_data}, #updates or inserts user data
+        upsert=True #update or insert
     )
