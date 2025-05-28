@@ -49,7 +49,14 @@ async def decode(request: Request): #receives query parameter [ex) ?code=0.AAAA1
     data = requests.post(token_url, data=body, headers={"Content-Type": "application/x-www-form-urlencoded"}) #sends post request
     response_data = data.json() #translates request to python dictionary
     access_token = response_data["access_token"] #extracts access token from response
-    info = get_user_info(access_token)
+    refresh_token = response_data["refresh_token"]
+    expires_in = response_data["expires_in"]
+    token_data = {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "expires_in": expires_in
+    }
+    info = get_user_info(token_data)
     await upsert_user(info)
     
     
