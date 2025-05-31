@@ -12,6 +12,7 @@ def get_user_info(token_data):
         "displayName": response_data.get("displayName"), #get makes parameter optional
         "email": response_data.get("mail"),
         "username": response_data.get("userPrincipalName"),
+        "access_token": token_data.get("access_token"),
         "refresh_token": token_data.get("refresh_token"),
         "expires_in": token_data.get("expires_in")
     }
