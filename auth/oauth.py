@@ -51,14 +51,11 @@ async def decode(request: Request): #receives query parameter [ex) ?code=0.AAAA1
     access_token = response_data["access_token"] #extracts access token from response
     refresh_token = response_data["refresh_token"]
     expires_in = response_data["expires_in"]
-    token_data = {
+    token_data = { #combines token data into a python dict
         "access_token": access_token,
         "refresh_token": refresh_token,
         "expires_in": expires_in
     }
     info = get_user_info(token_data)
     await upsert_user(info)
-    
-    
-    
     
