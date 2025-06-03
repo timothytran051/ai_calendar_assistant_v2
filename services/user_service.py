@@ -67,4 +67,8 @@ async def token_validation(user_id: str) -> str:
         new_token = get_user_info(refresh_data) #retrieves user data
         await upsert_user(new_token) #updates user data with new access token
         access_token = refresh_data["access_token"]
+        
+    if response.status_code not in [200,401]:
+        raise HTTPException(status_code=500, detail="Microsoft Graph error during token validation.")
+    
     return access_token #sends new access token back to where function is called

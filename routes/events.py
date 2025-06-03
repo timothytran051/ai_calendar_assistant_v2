@@ -1,5 +1,5 @@
 # from main import events_router as router
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from schemas.event import event_create_schema, event_response_schema, event_update_schema
 from db.db import db
 from services.user_service import token_validation
@@ -10,10 +10,10 @@ import uuid
 router = APIRouter()
 
 @router.get("")
-async def get_events():
+async def get_events(user_id: str):
     event_collection = db["events"]
     user_collection = db["users"]
-    user_id = user_collection["_id"]
+    # user_id = user_collection["_id"]
     token_validation(user_id)
     
     cursor = event_collection.find({"user_id": user_id}) #creates a cursor to find matching user_id in events table
@@ -22,11 +22,11 @@ async def get_events():
     
     
 @router.post("", response_model=event_response_schema)
-async def create_event(event: event_create_schema):
+async def create_event(event: event_create_schema, user_id: str):
     event_data = event.dict() #turns event response into python dict
     event_collection = db["events"] #establish connection with db and events table
     user_collection = db["users"]
-    user_id = user_collection["_id"] #use only for now, later on will change to localstorage on browser
+    # user_id = user_collection["_id"] #use only for now, later on will change to localstorage on browser
     token_validation(user_id) #validates token and refreshes if needed
     
     # event_data = {
@@ -38,9 +38,8 @@ async def create_event(event: event_create_schema):
     #     "end": datetime.utcnow(),
     #     "recurring": None
     # }
-    
-    result = await event_collection.insert_one(event_data)
     event_data["event_id"] = str(uuid.uuid4())
+    await event_collection.insert_one(event_data)
     
     # headers = {
     #     "Authorization": access_token,
@@ -56,7 +55,7 @@ async def create_event(event: event_create_schema):
     
     
 @router.patch("/{event_id}")
-async def update_event(event_id, update: event_update_schema):
+async def update_event(event_id, update: event_update_schema, user_id: str):
     new_event = update.dict()
     update_fields = {}
     for key, value in new_event.items(): #for loop goes through data from requests and removes all instances of None
@@ -65,13 +64,15 @@ async def update_event(event_id, update: event_update_schema):
             
     event_collection = db["events"]
     user_collection = db["users"]
-    event_collection.update_one({"event_id": event_id}, {"$set": update_fields})
+    token_validation(user_id)
+    await event_collection.update_one({"event_id": event_id, "user_id": user_id}, {"$set": update_fields})
     
 @router.delete("/{event_id}")
-async def delete_event(event_id):
+async def delete_event(event_id, user_id: str):
     event_collection = db["events"]
     user_collection = db["users"]
-    await event_collection.find_one_and_delete({"event_id": event_id})
+    token_validation(user_id)
+    await event_collection.find_one_and_delete({"event_id": event_id, "user_id": user_id})
     
     
 #1) user logs in and enters /events page
