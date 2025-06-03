@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
+from uuid import UUID
 
 class recurrence_pattern_schema(BaseModel):
     type: str #daily, weekly, absouteMonthly, relativeMonthly, absoluteYearly, etc.
@@ -29,8 +30,13 @@ class event_create_schema(BaseModel): #the client defines the information, conta
     recurring: Optional[recurrence_schema] = None
         
 class event_response_schema(event_create_schema): #the server defines the response information, and responds with the matching id and user id
-    id: str #using id instead of _id because mongo expects an objectId rather than a str, and fastapi can't expect objectIds, so we must convert _id to string in order for fastapi to be able to interpret the actual _id
+    event_id: str #using UUID now because mongodb's _id is vulnerable
     user_id: str
     created_at: datetime
     
-    
+class event_update_schema(BaseModel):
+    subject: Optional[str]
+    body: Optional[str]
+    start: Optional[datetime]
+    end: Optional[datetime]
+    recurring: Optional[recurrence_schema]
