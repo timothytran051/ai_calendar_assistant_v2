@@ -91,5 +91,36 @@
 
     window.addEventListener('load', checkAuth);
     </script>
+    <div id="status"></div>
+
+    <div id="login-form">
+        <input id="username" placeholder="Username">
+        <input id="password" placeholder="Password" type="password">
+        <button id="login">Log In</button>
+    </div>
+
+    <div id="events"></div>
+
+    <div id="create-form">
+        <input id="create-subject" placeholder="Subject">
+        <input id="create-start" placeholder="Start (ISO)">
+        <button id="create-event">Create Event</button>
+    </div>
+
+    <div id="update-form">
+        <input id="update-id" placeholder="Event ID">
+        <input id="update-subject" placeholder="Subject (optional)">
+        <input id="update-start" placeholder="Start (ISO optional)">
+        <button id="update-event">Update Event</button>
+    </div>
+
+    <div id="delete-form">
+        <input id="delete-id" placeholder="Event ID">
+        <button id="delete-event">Delete Event</button>
+    </div>
+
+    <button id="logout">Log Out</button>
+
+    <script src="main.js"></script>
 </body>
 </html>
