@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Calendar Assistant</title>
+</head>
+<body>
+    <div id="login-view">
+        <button id="ms-login">Sign in with Microsoft</button>
+    </div>
+
+    <div id="dashboard" style="display:none;">
+        <button id="events-btn">Manage Events</button>
+        <button id="pdf-btn">Parse PDF</button>
+        <button id="chat-btn">AI Chatbot</button>
+        <button id="logout-btn">Logout</button>
+    </div>
+
+    <div id="events-section" style="display:none;">
+        <!-- TODO: plug in event CRUD UI here -->
+        <p>Event management section</p>
+    </div>
+
+    <div id="pdf-section" style="display:none;">
+        <!-- TODO: plug in PDF parsing interface here -->
+        <p>PDF parser section</p>
+    </div>
+
+    <div id="chat-section" style="display:none;">
+        <!-- TODO: plug in AI chatbot UI here -->
+        <p>AI Chatbot section</p>
+    </div>
+
+    <script>
+    const loginButton = document.getElementById('ms-login');
+    const dashboard = document.getElementById('dashboard');
+    const loginView = document.getElementById('login-view');
+
+    const eventsBtn = document.getElementById('events-btn');
+    const pdfBtn = document.getElementById('pdf-btn');
+    const chatBtn = document.getElementById('chat-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    const eventsSection = document.getElementById('events-section');
+    const pdfSection = document.getElementById('pdf-section');
+    const chatSection = document.getElementById('chat-section');
+
+    function showSection(section) {
+        eventsSection.style.display = 'none';
+        pdfSection.style.display = 'none';
+        chatSection.style.display = 'none';
+        if (section) {
+            section.style.display = 'block';
+        }
+    }
+
+    function checkAuth() {
+        const token = localStorage.getItem('access_token');
+        const userId = localStorage.getItem('user_id');
+        if (token && userId) {
+            loginView.style.display = 'none';
+            dashboard.style.display = 'block';
+        } else {
+            loginView.style.display = 'block';
+            dashboard.style.display = 'none';
+            showSection(null);
+        }
+    }
+
+    loginButton.addEventListener('click', () => {
+        window.location.href = '/oauth/login/microsoft';
+    });
+
+    logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user_id');
+        checkAuth();
+    });
+
+    eventsBtn.addEventListener('click', () => {
+        showSection(eventsSection); // attach CRUD logic here
+    });
+
+    pdfBtn.addEventListener('click', () => {
+        showSection(pdfSection); // attach PDF parser logic here
+    });
+
+    chatBtn.addEventListener('click', () => {
+        showSection(chatSection); // attach chatbot integration here
+    });
+
+    window.addEventListener('load', checkAuth);
+    </script>
+</body>
+</html>
