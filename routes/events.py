@@ -1,16 +1,16 @@
 # from main import events_router as router
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Header
 from schemas.event import event_create_schema, event_response_schema, event_update_schema
 from db.db import db
-from services.user_service import token_validation
 from datetime import datetime
 import requests
 import uuid
+from auth.oauth import token_validation
 
 router = APIRouter()
 
 @router.get("")
-async def get_events(user_id: str):
+async def get_events(authorization: str = Header(...), user_id: str = Header(...)): #authorization header contains bearer access_token
     event_collection = db["events"]
     user_collection = db["users"]
     # user_id = user_collection["_id"]
@@ -22,7 +22,7 @@ async def get_events(user_id: str):
     
     
 @router.post("", response_model=event_response_schema)
-async def create_event(event: event_create_schema, user_id: str):
+async def create_event(event: event_create_schema, authorization: str = Header(...), user_id: str = Header(...)): #user_id header contains user_id
     event_data = event.dict() #turns event response into python dict
     event_collection = db["events"] #establish connection with db and events table
     user_collection = db["users"]
@@ -55,7 +55,7 @@ async def create_event(event: event_create_schema, user_id: str):
     
     
 @router.patch("/{event_id}")
-async def update_event(event_id, update: event_update_schema, user_id: str):
+async def update_event(event_id, update: event_update_schema, authorization: str = Header(...), user_id: str = Header(...)):
     new_event = update.dict()
     update_fields = {}
     for key, value in new_event.items(): #for loop goes through data from requests and removes all instances of None
@@ -68,7 +68,7 @@ async def update_event(event_id, update: event_update_schema, user_id: str):
     await event_collection.update_one({"event_id": event_id, "user_id": user_id}, {"$set": update_fields})
     
 @router.delete("/{event_id}")
-async def delete_event(event_id, user_id: str):
+async def delete_event(event_id, authorization: str = Header(...), user_id: str = Header(...)):
     event_collection = db["events"]
     user_collection = db["users"]
     token_validation(user_id)
